@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/03/27 18:35:22 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/03/27 19:11:54 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,14 @@ typedef struct s_philo_info
 	int	number_of_times_each_philosopher_must_eat;
 }	t_philo_info;
 
+# define TAKEN_A_FORK 1
+# define EATING	2
+# define SLEEPING 3
+# define THINKING 4
+# define DIED 5
+
 //parser.c
-t_philo_info parser(int argc, char **argv);
+t_philo_info	parser(int argc, char **argv);
+//utils.c
+void	ft_putnbr(int n);
 #endif

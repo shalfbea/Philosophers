@@ -8,7 +8,7 @@ FLAGS := -Wall -Wextra -Werror -I./include -g3
 
 PHILO := philo
 
-SRC = main.c parser.c
+SRC = main.c parser.c utils.c
 
 OBJ_DIR = ./obj/
 SRC_DIR = ./src/
