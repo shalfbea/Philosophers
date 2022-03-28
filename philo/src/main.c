@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/03/27 20:41:31 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/03/28 17:54:21 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,47 @@ void log_message(int philo_num, char mode)
 		write(1, " died\n", 7);
 }
 
+void	*test(void *philo)
+{
+	printf("%d: I am a philo!\n",((t_philo*) philo)->num);
+	return (NULL);
+}
+
 int	main(int argc, char **argv)
 {
+	int				i;
 	t_philo_info	philo_info;
+	t_philo			*philoes;
+	int				status_adr;
+	int				status;
 
+	status = 0;
 	philo_info = parser(argc, argv);
-	for (int i = 1; i < 6; ++i)
-		log_message(1, i);
+	philoes = (t_philo *)malloc(sizeof(t_philo) * philo_info.number_of_philosophers);
+	if (!philoes)
+		exit(0);
+
+	i = -1;
+	while (++i < philo_info.number_of_philosophers)
+		philoes[i].num = i + 1;
+	i = -1;
+	while (++i < philo_info.number_of_philosophers)
+	{
+		pthread_create(&philoes[i].thread, NULL, test, (void *) &philoes[i]);
+	}
+	i = -1;
+	status_adr = 0;
+	while (++i < philo_info.number_of_philosophers)
+	if(1)
+	{
+		printf("trying : %d\n", i);
+		status = pthread_join(philoes[i].thread, NULL);//(void **) &status_adr);
+		if (status)
+			printf("ERROR: cant join thread, status = %d\n", status);
+		else
+			printf("i: %d, status addr: %d\n", i, status_adr);
+	}
+	if (philoes)
+		free(philoes);
 	return (0);
 }

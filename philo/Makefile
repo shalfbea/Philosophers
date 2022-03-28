@@ -4,7 +4,7 @@ CC := clang
 
 TestingFlags := -fsanitize=address
 
-FLAGS := -Wall -Wextra -Werror -I./include -g3
+FLAGS := -Wall -Wextra -Werror -I./include -g3 -pthread
 
 PHILO := philo
 

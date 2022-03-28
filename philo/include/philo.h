@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/03/27 19:11:54 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/03/28 16:47:36 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@ typedef struct s_philo_info
 	int	time_to_sleep;
 	int	number_of_times_each_philosopher_must_eat;
 }	t_philo_info;
+
+typedef struct s_philo
+{
+	pthread_t		thread;
+	unsigned int	num;
+	char			fork_in_use;
+}	t_philo;
 
 # define TAKEN_A_FORK 1
 # define EATING	2
