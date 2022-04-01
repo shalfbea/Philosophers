@@ -8,7 +8,7 @@ FLAGS := -Wall -Wextra -Werror -I./include -g3 -pthread
 
 PHILO := philo
 
-SRC = main.c parser.c utils.c
+SRC = main.c parser.c utils.c philo_life.c
 
 OBJ_DIR = ./obj/
 SRC_DIR = ./src/
