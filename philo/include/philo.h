@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/03/30 19:37:43 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/05 21:57:16 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,20 +26,23 @@ typedef struct timeval	t_timeval;
 
 typedef struct s_philo_info
 {
-	int			number_of_philosophers;
-	int			die;
-	int			eat;
-	int			sleep;
-	int			times_must_eat;
-	//t_timeval	start;
-	uint64_t	start_timer;
+	char			finish;
+	int				num;
+	int				die;
+	int				eat;
+	int				sleep;
+	int				times_must_eat;
+	char			*forks_free;
+	pthread_mutex_t	eat_mutex;
 }	t_philo_info;
 
 typedef struct s_philo
 {
 	pthread_t		thread;
-	unsigned int	num;
-	char			fork_in_use;
+	int				num;
+	uint64_t		last_fed;
+	char			dead;
+	int				times_eat;
 	t_philo_info	*info;
 }	t_philo;
 
@@ -52,10 +55,11 @@ typedef struct s_philo
 //parser.c
 t_philo_info	parser(int argc, char **argv);
 //utils.c
-void	ft_putnbr(int n);
+void			ft_putnbr(int n);
 //philo_life.c
-void	*philo_life(void *philosopher);
+void			*philo_life(void *philosopher);
 //main.c
-void log_message(t_philo *philo, char mode);
-uint64_t	time_getter(void);
+void			log_message(t_philo *philo, char mode);
+uint64_t		time_getter(void);
+int				exitter(t_philo *philoes, char mode);
 #endif

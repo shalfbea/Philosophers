@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 18:24:22 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/03/28 18:05:57 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/05 21:52:29 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	ft_atoi_helper(const char *str, int *sign)
 	return (i);
 }
 
-static int	ft_atoi(const char *str)
+static int	ft_atoi_mod(const char *str, int *error)
 {
 	size_t	res;
 	int		i;
@@ -56,22 +56,38 @@ static int	ft_atoi(const char *str)
 		if ((sign < 0) && (res > 2147483648))
 			return (0);
 	}
+	if (str[i] || sign == -1)
+		(*error) = 1;
 	return ((int) res * sign);
 }
 
 t_philo_info	parser(int argc, char **argv)
 {
 	t_philo_info	philo_info;
+	int				i;
+	char			*forks_free;
 
 	if (argc < 5 || argc > 6)
-		exit(0);
-	(void) argv;
-	ft_atoi("kek");
-	philo_info.number_of_philosophers = ft_atoi(argv[1]);
-	philo_info.die = ft_atoi(argv[2]);
-	philo_info.eat = ft_atoi(argv[3]);
-	philo_info.sleep = ft_atoi(argv[4]);
+		exitter(NULL, 1);
+	i = 0;
+	philo_info.num = ft_atoi_mod(argv[1], &i);
+	philo_info.die = ft_atoi_mod(argv[2], &i);
+	philo_info.eat = ft_atoi_mod(argv[3], &i);
+	philo_info.sleep = ft_atoi_mod(argv[4], &i);
+	philo_info.times_must_eat = 0;
 	if (argc > 5)
-		philo_info.times_must_eat = ft_atoi(argv[5]);
+		philo_info.times_must_eat = ft_atoi_mod(argv[5], &i);
+	//if (i || philo_info.num <= 0 || philo_info.die <= 0 || philo_info.eat <= 0 || philo_info.sleep <= 0 || philo_info.times_must_eat <= 0)
+	if (i)
+		philo_info.num = 0;
+	forks_free = (char *)malloc(sizeof(char) * philo_info.num);
+	if (!forks_free)
+		exitter(NULL, 1);
+	i = -1;
+	while (++i < philo_info.num)
+		forks_free[i] = 1;
+	philo_info.forks_free = forks_free;
+	philo_info.finish = 0;
+	pthread_mutex_init(&(philo_info.eat_mutex), NULL);
 	return (philo_info);
 }
