@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/05 21:57:16 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/07 20:40:55 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,22 @@ typedef struct s_philo_info
 	int				eat;
 	int				sleep;
 	int				times_must_eat;
-	char			*forks_free;
-	pthread_mutex_t	eat_mutex;
+	pthread_mutex_t	finished_mutex;
+	pthread_mutex_t	logging_mutex;
 }	t_philo_info;
 
 typedef struct s_philo
 {
+	pthread_mutex_t	*own_fork;
+	pthread_mutex_t	*neigbor_fork;
 	pthread_t		thread;
 	int				num;
-	uint64_t		last_fed;
+	int64_t			last_fed;
 	char			dead;
 	int				times_eat;
+	pthread_mutex_t	meal_mutex;
 	t_philo_info	*info;
+	struct s_philo	*next;
 }	t_philo;
 
 # define TAKEN_A_FORK 1
@@ -60,6 +64,9 @@ void			ft_putnbr(int n);
 void			*philo_life(void *philosopher);
 //main.c
 void			log_message(t_philo *philo, char mode);
-uint64_t		time_getter(void);
+int64_t		time_getter(void);
 int				exitter(t_philo *philoes, char mode);
+
+//control.c
+void	*philo_control(void *philosophers);
 #endif
