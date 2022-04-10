@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 16:36:13 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 17:05:30 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,8 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
-# include <signal.h>
 # include <pthread.h>
 # include <sys/time.h>
-# include <sys/wait.h>
-# include <semaphore.h>
 
 typedef struct timeval	t_timeval;
 
@@ -54,18 +51,11 @@ typedef struct s_philo
 # define THINKING 4
 # define DIED 5
 
-//parser.c
 t_philo_info	parser(int argc, char **argv);
-//utils.c
-void			ft_putnbr(int n);
-//philo_life.c
 void			*philo_life(void *philosopher);
-//main.c
 void			log_message(t_philo *philo, char mode);
-int64_t		time_getter(void);
+int64_t			time_getter(void);
 int				exitter(t_philo *philoes, char mode);
-
-//set and control.c
-void	*philo_control(void *philosophers);
-t_philo	*philo_setter(t_philo_info *philo_info);
+void			*philo_control(void *philosophers);
+t_philo			*philo_setter(t_philo_info *philo_info);
 #endif
