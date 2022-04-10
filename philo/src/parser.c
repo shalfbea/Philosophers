@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 18:24:22 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/07 20:24:49 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 16:25:52 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ t_philo_info	parser(int argc, char **argv)
 	philo_info.times_must_eat = 0;
 	if (argc > 5)
 		philo_info.times_must_eat = ft_atoi_mod(argv[5], &i);
-	//if (i || philo_info.num <= 0 || philo_info.die <= 0 || philo_info.eat <= 0 || philo_info.sleep <= 0 || philo_info.times_must_eat <= 0)
 	if (i)
 		philo_info.num = 0;
 	i = -1;

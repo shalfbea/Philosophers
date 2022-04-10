@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/07 20:40:55 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 16:36:13 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,9 @@ typedef struct s_philo
 	pthread_t		thread;
 	int				num;
 	int64_t			last_fed;
-	char			dead;
 	int				times_eat;
-	pthread_mutex_t	meal_mutex;
+	pthread_mutex_t	*meal_mutex;
 	t_philo_info	*info;
-	struct s_philo	*next;
 }	t_philo;
 
 # define TAKEN_A_FORK 1
@@ -67,6 +65,7 @@ void			log_message(t_philo *philo, char mode);
 int64_t		time_getter(void);
 int				exitter(t_philo *philoes, char mode);
 
-//control.c
+//set and control.c
 void	*philo_control(void *philosophers);
+t_philo	*philo_setter(t_philo_info *philo_info);
 #endif
