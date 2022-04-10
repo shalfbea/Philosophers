@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 18:23:17 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 16:55:43 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 21:03:07 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	*philo_control(void *philosophers)
 			rules_check(&philoes[i], &fed_enough);
 		if (fed_enough == philoes->info->num && philoes->info->times_must_eat)
 			philoes->info->finish = 1;
+		usleep(10);
 	}
 	return (NULL);
 }
@@ -74,7 +75,7 @@ t_philo	*philo_setter(t_philo_info *philo_info)
 
 	philoes = (t_philo *)malloc(sizeof(t_philo) * philo_info->num);
 	if (!philoes)
-		exitter(philoes, 1);
+		return (NULL);
 	i = -1;
 	while (++i < philo_info->num)
 	{

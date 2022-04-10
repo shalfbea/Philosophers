@@ -6,11 +6,11 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 21:06:29 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 20:59:03 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 int64_t	time_getter(void)
 {
@@ -32,10 +32,12 @@ void	log_message(t_philo *philo, char mode)
 {
 	static char	first_die;
 
-	if (philo->info->finish && mode != DIED && mode != EATING)
+	sem_wait(philo->info->logging_sem);
+	if (philo->dead && mode != DIED && mode != EATING)
+	{
+		sem_post(philo->info->logging_sem);
 		return ;
-	if (mode == 10)
-		printf("%lld %d:started thread\n", time_getter(), philo->num);
+	}
 	else if (mode == TAKEN_A_FORK)
 		printf("%lld %d had taken a fork\n", time_getter(), philo->num);
 	else if (mode == EATING && !first_die)
@@ -49,63 +51,71 @@ void	log_message(t_philo *philo, char mode)
 		printf("%lld %d died\n", time_getter(), philo->num);
 		first_die = 1;
 	}
+	sem_post(philo->info->logging_sem);
 }
 
-int	exitter(t_philo *philoes, char mode)
+static void	close_philo_sems(t_philo_info *info)
+{
+	sem_close(info->meal_sem);
+	sem_close(info->logging_sem);
+	sem_close(info->forks_sem);
+	sem_unlink("/philoes_meal");
+	sem_unlink("/philoes_logging");
+	sem_unlink("/philoes_forks");
+}
+
+void	exitter(t_philo *philoes, char mode)
 {
 	int	i;
+	int	returnal;
 
 	if (mode)
 		printf("Error\n");
 	if (!philoes)
-		return (mode);
+		exit(mode);
 	i = -1;
 	while (++i < philoes->info->num)
 	{
-		pthread_mutex_destroy(philoes[i].own_fork);
-		pthread_mutex_destroy(philoes[i].meal_mutex);
-		if (philoes[i].own_fork)
-			free(philoes[i].own_fork);
-		if (philoes[i].meal_mutex)
-			free(philoes[i].meal_mutex);
+		waitpid(-1, &returnal, 0);
+		if (returnal != 0)
+		{
+			i = -1;
+			while (++i < philoes->info->num)
+				kill(philoes[i].pid, SIGTERM);
+			break ;
+		}
 	}
+	close_philo_sems(philoes->info);
 	if (philoes)
 		free(philoes);
-	return (mode);
-}
-
-void	threads_creator(t_philo *philoes)
-{
-	pthread_t		control_thread;
-	int				i;
-
-	i = -1;
-	while (++i < philoes->info->num)
-	{
-		pthread_create(&philoes[i].thread, NULL, philo_life,
-			(void *) &philoes[i]);
-		philoes[i].last_fed = time_getter();
-	}
-	pthread_create(&control_thread, NULL, philo_control,
-		(void *) philoes);
-	pthread_join(control_thread, NULL);
-	i = -1;
-	while (++i < philoes->info->num)
-		pthread_join(philoes[i].thread, NULL);
+	exit (mode);
 }
 
 int	main(int argc, char **argv)
 {
 	t_philo_info	philo_info;
 	t_philo			*philoes;
+	int				i;
 
 	philo_info = parser(argc, argv);
 	philoes = NULL;
 	if (philo_info.num == 0)
-		return (exitter(philoes, 1));
+		exitter(philoes, 1);
 	philoes = philo_setter(&philo_info);
 	if (!philoes)
-		return (exitter(philoes, 1));
-	threads_creator(philoes);
-	return (exitter(philoes, 0));
+		exitter(philoes, 1);
+	i = -1;
+	while (++i < philo_info.num)
+	{
+		philoes[i].last_fed = time_getter();
+		philoes[i].pid = fork();
+		if (philoes[i].pid < 0)
+			exitter(philoes, 1);
+		if (philoes[i].pid == 0)
+		{
+			philo_life(&philoes[i]);
+			exit(1);
+		}
+	}
+	exitter(philoes, 0);
 }

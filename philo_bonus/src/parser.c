@@ -6,11 +6,11 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 18:24:22 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 18:41:12 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 19:43:54 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "philo_bonus.h"
 
 static int	ft_isspace(char c)
 {
@@ -67,10 +67,7 @@ t_philo_info	parser(int argc, char **argv)
 	int				i;
 
 	if (argc < 5 || argc > 6)
-	{
-		philo_info.num = 0;
-		return (philo_info);
-	}
+		exitter(NULL, 1);
 	i = 0;
 	philo_info.num = ft_atoi_mod(argv[1], &i);
 	philo_info.die = ft_atoi_mod(argv[2], &i);
@@ -82,6 +79,5 @@ t_philo_info	parser(int argc, char **argv)
 	if (i)
 		philo_info.num = 0;
 	i = -1;
-	philo_info.finish = 0;
 	return (philo_info);
 }
