@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 18:24:22 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 17:43:44 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/10 17:45:05 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,5 @@ t_philo_info	parser(int argc, char **argv)
 		philo_info.num = 0;
 	i = -1;
 	philo_info.finish = 0;
-	pthread_mutex_init(&(philo_info.logging_mutex), NULL);
 	return (philo_info);
 }
