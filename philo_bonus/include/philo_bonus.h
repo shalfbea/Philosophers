@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 21:01:40 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:27:50 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ typedef struct s_philo_info
 	sem_t			*meal_sem;
 	sem_t			*logging_sem;
 	sem_t			*forks_sem;
+	sem_t			*final_sem;
 }	t_philo_info;
 
 typedef struct s_philo

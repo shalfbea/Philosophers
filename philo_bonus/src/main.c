@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 20:59:03 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:29:43 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,9 +59,11 @@ static void	close_philo_sems(t_philo_info *info)
 	sem_close(info->meal_sem);
 	sem_close(info->logging_sem);
 	sem_close(info->forks_sem);
+	sem_close(info->final_sem);
 	sem_unlink("/philoes_meal");
 	sem_unlink("/philoes_logging");
 	sem_unlink("/philoes_forks");
+	sem_unlink("/philoes_final");
 }
 
 void	exitter(t_philo *philoes, char mode)

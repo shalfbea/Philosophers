@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 18:23:17 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 20:59:27 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:30:27 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@ static char	sem_initter(t_philo_info *info)
 	sem_unlink("/philoes_meal");
 	sem_unlink("/philoes_logging");
 	sem_unlink("/philoes_forks");
+	sem_unlink("/philoes_final");
 	info->meal_sem = sem_open("/philoes_meal", O_CREAT, S_IRWXU, 1);
 	info->logging_sem = sem_open("/philoes_logging", O_CREAT, S_IRWXU, 1);
+	info->final_sem = sem_open("/philoes_final", O_CREAT, S_IRWXU, 1);
 	info->forks_sem = sem_open("/philoes_forks", O_CREAT, S_IRWXU, info->num);
 	if (info->meal_sem <= 0 | info->logging_sem <= 0 | info->forks_sem <= 0)
 		return (1);

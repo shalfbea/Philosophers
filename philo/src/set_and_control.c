@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 18:23:17 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 21:03:07 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:26:25 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,9 @@ static char	rules_check(t_philo *philoe, int *fed_enough)
 	if ((time_getter()) - philoe->last_fed > philoe->info->die)
 	{
 		log_message(philoe, DIED);
+		pthread_mutex_lock(philoe->info->death_mutex);
 		philoe->info->finish = 1;
+		pthread_mutex_unlock(philoe->info->death_mutex);
 		return (1);
 	}
 	return (0);
@@ -42,7 +44,11 @@ void	*philo_control(void *philosophers)
 		while (++i < philoes->info->num)
 			rules_check(&philoes[i], &fed_enough);
 		if (fed_enough == philoes->info->num && philoes->info->times_must_eat)
+		{
+			pthread_mutex_lock(philoes->info->death_mutex);
 			philoes->info->finish = 1;
+			pthread_mutex_unlock(philoes->info->death_mutex);
+		}
 		usleep(10);
 	}
 	return (NULL);
@@ -83,6 +89,9 @@ t_philo	*philo_setter(t_philo_info *philo_info)
 		philoes[i].info = philo_info;
 		philoes[i].times_eat = 0;
 	}
+	philoes->info->death_mutex = (pthread_mutex_t *)
+		malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(philoes->info->death_mutex, NULL);
 	forks_initter(philoes);
 	return (philoes);
 }

@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:01:02 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 16:29:10 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:25:34 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,13 @@ char	eating(t_philo *philo)
 {
 	if (philo->info->num == 1)
 		return (1);
+	pthread_mutex_lock(philo->info->death_mutex);
 	if (philo->info->finish)
+	{
+		pthread_mutex_unlock(philo->info->death_mutex);
 		return (1);
+	}
+	pthread_mutex_unlock(philo->info->death_mutex);
 	take_forks(philo);
 	pthread_mutex_lock(philo->meal_mutex);
 	log_message(philo, EATING);
@@ -68,8 +73,13 @@ void	*philo_life(void *philosopher)
 		if (eating(philo))
 			return (NULL);
 		log_message(philo, SLEEPING);
+		pthread_mutex_lock(philo->info->death_mutex);
 		if (philo->info->finish)
+		{
+			pthread_mutex_unlock(philo->info->death_mutex);
 			return (NULL);
+		}
+		pthread_mutex_unlock(philo->info->death_mutex);
 		smart_sleeper(philo->info->sleep);
 		log_message(philo, THINKING);
 	}

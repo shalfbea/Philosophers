@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 21:06:29 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:22:43 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,9 @@ int	exitter(t_philo *philoes, char mode)
 	if (!philoes)
 		return (mode);
 	i = -1;
+	pthread_mutex_destroy(philoes->info->death_mutex);
+	if (philoes->info->death_mutex)
+		free (philoes->info->death_mutex);
 	while (++i < philoes->info->num)
 	{
 		pthread_mutex_destroy(philoes[i].own_fork);

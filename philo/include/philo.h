@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/10 17:44:51 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/11 14:20:56 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ typedef struct s_philo_info
 	int				eat;
 	int				sleep;
 	int				times_must_eat;
+	pthread_mutex_t	*death_mutex;
 }	t_philo_info;
 
 typedef struct s_philo
