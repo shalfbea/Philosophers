@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:01:02 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/11 14:38:31 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/12 18:49:19 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,26 @@ static void	*checker_thread(void *philosopher)
 	return (NULL);
 }
 
+static char	philo_cycle(t_philo *philo)
+{
+	if (eating(philo))
+		return (1);
+	if (philo->times_eat >= philo->info->times_must_eat
+		&& philo->info->times_must_eat)
+		return (1);
+	log_message(philo, SLEEPING);
+	sem_wait(philo->info->final_sem);
+	if (philo->dead)
+	{
+		sem_post(philo->info->final_sem);
+		return (1);
+	}
+	sem_post(philo->info->final_sem);
+	smart_sleeper(philo->info->sleep);
+	log_message(philo, THINKING);
+	return (0);
+}
+
 void	philo_life(void *philosopher)
 {
 	t_philo		*philo;
@@ -78,23 +98,10 @@ void	philo_life(void *philosopher)
 	pthread_create(&control_thread, NULL, checker_thread,
 		(void *) philo);
 	philo->last_fed = time_getter();
-	while (!philo->dead)
+	while (1)
 	{
-		if (eating(philo))
+		if (philo_cycle(philo))
 			break ;
-		if (philo->times_eat >= philo->info->times_must_eat
-			&& philo->info->times_must_eat)
-			break ;
-		log_message(philo, SLEEPING);
-		sem_wait(philo->info->final_sem);
-		if (philo->dead)
-		{
-			sem_post(philo->info->final_sem);
-			break ;
-		}
-		sem_post(philo->info->final_sem);
-		smart_sleeper(philo->info->sleep);
-		log_message(philo, THINKING);
 	}
 	sem_wait(philo->info->final_sem);
 	if (philo->dead)
