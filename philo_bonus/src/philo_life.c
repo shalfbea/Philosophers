@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:01:02 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/12 18:49:19 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 14:26:13 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,11 @@ void	smart_sleeper(uint64_t milliseconds)
 		usleep(50);
 }
 
-char	eating(t_philo *philo)
+void	eating(t_philo *philo)
 {
-	if (philo->info->num == 1)
-		philo->dead = 1;
-	sem_wait(philo->info->final_sem);
-	if (philo->dead)
-	{
-		sem_post(philo->info->final_sem);
-		return (1);
-	}
+	static char	fed_enough;
+
+	philo->times_eat++;
 	sem_post(philo->info->final_sem);
 	sem_wait(philo->info->forks_sem);
 	log_message(philo, TAKEN_A_FORK);
@@ -43,8 +38,12 @@ char	eating(t_philo *philo)
 	smart_sleeper(philo->info->eat);
 	sem_post(philo->info->forks_sem);
 	sem_post(philo->info->forks_sem);
-	philo->times_eat++;
-	return (0);
+	if (philo->times_eat > philo->info->times_must_eat
+		&& philo->info->times_must_eat && !fed_enough)
+	{
+		fed_enough = 1;
+		sem_post(philo->info->eat_sem);
+	}
 }
 
 static void	*checker_thread(void *philosopher)
@@ -64,18 +63,20 @@ static void	*checker_thread(void *philosopher)
 			exit(1);
 			return (NULL);
 		}
-		usleep(50);
+		usleep(20);
 	}
 	return (NULL);
 }
 
 static char	philo_cycle(t_philo *philo)
 {
-	if (eating(philo))
+	sem_wait(philo->info->final_sem);
+	if (philo->dead)
+	{
+		sem_post(philo->info->final_sem);
 		return (1);
-	if (philo->times_eat >= philo->info->times_must_eat
-		&& philo->info->times_must_eat)
-		return (1);
+	}
+	eating(philo);
 	log_message(philo, SLEEPING);
 	sem_wait(philo->info->final_sem);
 	if (philo->dead)
@@ -98,6 +99,7 @@ void	philo_life(void *philosopher)
 	pthread_create(&control_thread, NULL, checker_thread,
 		(void *) philo);
 	philo->last_fed = time_getter();
+	usleep(philo->num * 5 - 5);
 	while (1)
 	{
 		if (philo_cycle(philo))
@@ -110,5 +112,6 @@ void	philo_life(void *philosopher)
 		exit(1);
 	}
 	sem_post(philo->info->final_sem);
+	sem_post(philo->info->eat_sem);
 	exit(0);
 }

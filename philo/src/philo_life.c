@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:01:02 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/12 18:50:17 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 14:39:47 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,28 +21,8 @@ void	smart_sleeper(uint64_t milliseconds)
 		usleep(50);
 }
 
-void	take_forks(t_philo *philo)
+static char	death_check(t_philo *philo)
 {
-	if (philo->num % 2)
-	{
-		pthread_mutex_lock(philo->own_fork);
-		log_message(philo, TAKEN_A_FORK);
-		pthread_mutex_lock(philo->neigbor_fork);
-		log_message(philo, TAKEN_A_FORK);
-	}
-	else
-	{
-		pthread_mutex_lock(philo->neigbor_fork);
-		log_message(philo, TAKEN_A_FORK);
-		pthread_mutex_lock(philo->own_fork);
-		log_message(philo, TAKEN_A_FORK);
-	}
-}
-
-char	eating(t_philo *philo)
-{
-	if (philo->info->num == 1)
-		return (1);
 	pthread_mutex_lock(philo->info->death_mutex);
 	if (philo->info->finish)
 	{
@@ -50,6 +30,42 @@ char	eating(t_philo *philo)
 		return (1);
 	}
 	pthread_mutex_unlock(philo->info->death_mutex);
+	return (0);
+}
+
+static int	take_forks(t_philo *philo)
+{
+	if (philo->num % 2)
+	{
+		pthread_mutex_lock(philo->own_fork);
+		if (death_check(philo))
+			return (pthread_mutex_unlock(philo->own_fork));
+		log_message(philo, TAKEN_A_FORK);
+		pthread_mutex_lock(philo->neigbor_fork);
+		if (death_check(philo))
+			return (pthread_mutex_unlock(philo->neigbor_fork));
+		log_message(philo, TAKEN_A_FORK);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->neigbor_fork);
+		if (death_check(philo))
+			return (pthread_mutex_unlock(philo->neigbor_fork));
+		log_message(philo, TAKEN_A_FORK);
+		pthread_mutex_lock(philo->own_fork);
+		if (death_check(philo))
+			return (pthread_mutex_unlock(philo->own_fork));
+		log_message(philo, TAKEN_A_FORK);
+	}
+	return (0);
+}
+
+char	eating(t_philo *philo)
+{
+	if (philo->info->num == 1)
+		return (1);
+	if (death_check(philo))
+		return (1);
 	take_forks(philo);
 	pthread_mutex_lock(philo->meal_mutex);
 	log_message(philo, EATING);

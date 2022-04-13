@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/11 14:29:43 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 14:03:15 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,24 +68,23 @@ static void	close_philo_sems(t_philo_info *info)
 
 void	exitter(t_philo *philoes, char mode)
 {
-	int	i;
-	int	returnal;
+	int			i;
+	pthread_t	fed_thread;
 
 	if (mode)
 		printf("Error\n");
 	if (!philoes)
 		exit(mode);
+	pthread_create(&fed_thread, NULL, fed_control,
+		(void *) philoes);
 	i = -1;
 	while (++i < philoes->info->num)
 	{
-		waitpid(-1, &returnal, 0);
-		if (returnal != 0)
-		{
-			i = -1;
-			while (++i < philoes->info->num)
-				kill(philoes[i].pid, SIGTERM);
-			break ;
-		}
+		waitpid(-1, NULL, 0);
+		i = -1;
+		while (++i < philoes->info->num)
+			kill(philoes[i].pid, SIGTERM);
+		break ;
 	}
 	close_philo_sems(philoes->info);
 	if (philoes)
@@ -107,16 +106,16 @@ int	main(int argc, char **argv)
 	if (!philoes)
 		exitter(philoes, 1);
 	i = -1;
+	time_getter();
 	while (++i < philo_info.num)
 	{
-		philoes[i].last_fed = time_getter();
 		philoes[i].pid = fork();
 		if (philoes[i].pid < 0)
 			exitter(philoes, 1);
 		if (philoes[i].pid == 0)
 		{
+			sem_wait(philoes[i].info->eat_sem);
 			philo_life(&philoes[i]);
-			exit(1);
 		}
 	}
 	exitter(philoes, 0);

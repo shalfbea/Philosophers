@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/11 14:22:43 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 14:53:49 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,13 @@ void	log_message(t_philo *philo, char mode)
 {
 	static char	first_die;
 
+	pthread_mutex_lock(philo->info->death_mutex);
 	if (philo->info->finish && mode != DIED && mode != EATING)
+	{
+		pthread_mutex_unlock(philo->info->death_mutex);
 		return ;
+	}
+	pthread_mutex_unlock(philo->info->death_mutex);
 	if (mode == 10)
 		printf("%lld %d:started thread\n", time_getter(), philo->num);
 	else if (mode == TAKEN_A_FORK)

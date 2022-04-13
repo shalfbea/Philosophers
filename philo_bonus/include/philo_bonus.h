@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:26:42 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/11 14:27:50 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 13:58:12 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct s_philo_info
 	sem_t			*logging_sem;
 	sem_t			*forks_sem;
 	sem_t			*final_sem;
+	sem_t			*eat_sem;
 }	t_philo_info;
 
 typedef struct s_philo
@@ -59,4 +60,5 @@ void			log_message(t_philo *philo, char mode);
 int64_t			time_getter(void);
 void			exitter(t_philo *philoes, char mode);
 t_philo			*philo_setter(t_philo_info *philo_info);
+void			*fed_control(void *philos_void);
 #endif

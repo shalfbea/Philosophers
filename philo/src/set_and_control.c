@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 18:23:17 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/11 14:26:25 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 14:48:15 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	*philo_control(void *philosophers)
 	int		fed_enough;
 
 	philoes = (t_philo *) philosophers;
-	while (!(philoes->info->finish))
+	while (1)
 	{
 		fed_enough = 0;
 		i = -1;
@@ -48,6 +48,7 @@ void	*philo_control(void *philosophers)
 			pthread_mutex_lock(philoes->info->death_mutex);
 			philoes->info->finish = 1;
 			pthread_mutex_unlock(philoes->info->death_mutex);
+			return (NULL);
 		}
 		usleep(10);
 	}
