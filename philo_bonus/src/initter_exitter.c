@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   setting.c                                          :+:      :+:    :+:   */
+/*   initter_exitter.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 18:23:17 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/13 13:57:55 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 15:27:56 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,4 +65,37 @@ void	*fed_control(void *philos_void)
 	while (++i < philos->info->num)
 		kill(philos[i].pid, SIGTERM);
 	return (NULL);
+}
+
+static void	close_philo_sems(t_philo_info *info)
+{
+	sem_close(info->meal_sem);
+	sem_close(info->logging_sem);
+	sem_close(info->forks_sem);
+	sem_close(info->final_sem);
+	sem_unlink("/philoes_meal");
+	sem_unlink("/philoes_logging");
+	sem_unlink("/philoes_forks");
+	sem_unlink("/philoes_final");
+}
+
+void	exitter(t_philo *philoes, char mode)
+{
+	int			i;
+	pthread_t	fed_thread;
+
+	if (mode)
+		printf("Error\n");
+	if (!philoes)
+		exit(mode);
+	pthread_create(&fed_thread, NULL, fed_control,
+		(void *) philoes);
+	waitpid(-1, NULL, 0);
+	i = -1;
+	while (++i < philoes->info->num)
+		kill(philoes[i].pid, SIGTERM);
+	close_philo_sems(philoes->info);
+	if (philoes)
+		free(philoes);
+	exit (mode);
 }

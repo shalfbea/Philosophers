@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/27 17:42:54 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/13 14:03:15 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 15:27:15 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,60 +54,12 @@ void	log_message(t_philo *philo, char mode)
 	sem_post(philo->info->logging_sem);
 }
 
-static void	close_philo_sems(t_philo_info *info)
+static void	threads_starter(t_philo *philoes)
 {
-	sem_close(info->meal_sem);
-	sem_close(info->logging_sem);
-	sem_close(info->forks_sem);
-	sem_close(info->final_sem);
-	sem_unlink("/philoes_meal");
-	sem_unlink("/philoes_logging");
-	sem_unlink("/philoes_forks");
-	sem_unlink("/philoes_final");
-}
+	int	i;
 
-void	exitter(t_philo *philoes, char mode)
-{
-	int			i;
-	pthread_t	fed_thread;
-
-	if (mode)
-		printf("Error\n");
-	if (!philoes)
-		exit(mode);
-	pthread_create(&fed_thread, NULL, fed_control,
-		(void *) philoes);
 	i = -1;
 	while (++i < philoes->info->num)
-	{
-		waitpid(-1, NULL, 0);
-		i = -1;
-		while (++i < philoes->info->num)
-			kill(philoes[i].pid, SIGTERM);
-		break ;
-	}
-	close_philo_sems(philoes->info);
-	if (philoes)
-		free(philoes);
-	exit (mode);
-}
-
-int	main(int argc, char **argv)
-{
-	t_philo_info	philo_info;
-	t_philo			*philoes;
-	int				i;
-
-	philo_info = parser(argc, argv);
-	philoes = NULL;
-	if (philo_info.num == 0)
-		exitter(philoes, 1);
-	philoes = philo_setter(&philo_info);
-	if (!philoes)
-		exitter(philoes, 1);
-	i = -1;
-	time_getter();
-	while (++i < philo_info.num)
 	{
 		philoes[i].pid = fork();
 		if (philoes[i].pid < 0)
@@ -116,7 +68,25 @@ int	main(int argc, char **argv)
 		{
 			sem_wait(philoes[i].info->eat_sem);
 			philo_life(&philoes[i]);
+			exitter(philoes, 0);
 		}
 	}
+	usleep(500);
+}
+
+int	main(int argc, char **argv)
+{
+	t_philo_info	philo_info;
+	t_philo			*philoes;
+
+	philo_info = parser(argc, argv);
+	philoes = NULL;
+	if (philo_info.num == 0)
+		exitter(philoes, 1);
+	philoes = philo_setter(&philo_info);
+	if (!philoes)
+		exitter(philoes, 1);
+	time_getter();
+	threads_starter(philoes);
 	exitter(philoes, 0);
 }

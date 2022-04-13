@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:01:02 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/13 14:26:13 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/13 15:22:59 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,19 +99,11 @@ void	philo_life(void *philosopher)
 	pthread_create(&control_thread, NULL, checker_thread,
 		(void *) philo);
 	philo->last_fed = time_getter();
-	usleep(philo->num * 5 - 5);
+	usleep(philo->num * 5 - 4);
 	while (1)
 	{
 		if (philo_cycle(philo))
 			break ;
 	}
-	sem_wait(philo->info->final_sem);
-	if (philo->dead)
-	{
-		sem_post(philo->info->final_sem);
-		exit(1);
-	}
-	sem_post(philo->info->final_sem);
-	sem_post(philo->info->eat_sem);
-	exit(0);
+	return ;
 }
