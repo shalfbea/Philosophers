@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/06 18:23:17 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/13 14:48:15 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/19 16:39:58 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,10 @@ void	*philo_control(void *philosophers)
 		fed_enough = 0;
 		i = -1;
 		while (++i < philoes->info->num)
-			rules_check(&philoes[i], &fed_enough);
+		{
+			if (rules_check(&philoes[i], &fed_enough))
+				return (NULL);
+		}
 		if (fed_enough == philoes->info->num && philoes->info->times_must_eat)
 		{
 			pthread_mutex_lock(philoes->info->death_mutex);

@@ -2,9 +2,9 @@ HEADER := include/philo_bonus.h
 
 CC := clang
 
-TestingFlags := -fsanitize=address
+TestingFlags := -fsanitize=address -g3
 
-FLAGS := -Wall -Wextra -Werror -I./include -g3 -pthread
+FLAGS := -Wall -Wextra -Werror -I./include -pthread
 
 PHILO := philo_bonus
 
