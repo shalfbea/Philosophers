@@ -6,7 +6,7 @@
 /*   By: shalfbea <shalfbea@student.21-school.ru    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/28 18:01:02 by shalfbea          #+#    #+#             */
-/*   Updated: 2022/04/13 14:39:47 by shalfbea         ###   ########.fr       */
+/*   Updated: 2022/04/19 16:52:27 by shalfbea         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,10 @@ static int	take_forks(t_philo *philo)
 char	eating(t_philo *philo)
 {
 	if (philo->info->num == 1)
+	{
+		log_message(philo, TAKEN_A_FORK);
 		return (1);
+	}
 	if (death_check(philo))
 		return (1);
 	take_forks(philo);
