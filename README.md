@@ -74,3 +74,4 @@ sem_post, sem_wait, sem_unlink
   - Each philosopher should be a process. But the main process should not be a philosopher.
 
 ### Evaluation result:
+<img width="1591" alt="Screen Shot 2022-09-14 at 18 47 55" src="https://user-images.githubusercontent.com/92727363/190201894-3cb184f8-81a0-4b4c-abb9-42c0b9d24252.png">
